@@ -1,27 +1,38 @@
 import { Request, Response } from 'express';
-import { User } from '../models/userModel';
-import { pool } from '../database'; // Asegúrate de importar la configuración de tu base de datos aquí
+import { addUser, getUserByEmail } from '../models/userModel';
 
-const registerUser = (req: Request, res: Response) => {
-    const { firstName, lastName, email, password, confirmPassword } = req.body; // Obtiene los datos del cuerpo de la solicitud
-  
-    // Verifica que la contraseña y la confirmación de la contraseña coincidan
+const registerUser = async (req: Request, res: Response): Promise<void> => {
+    const { firstName, lastName, email, password, confirmPassword } = req.body;
+
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'La contraseña y la confirmación de la contraseña no coinciden' });
+        res.status(400).json({ message: 'La contraseña y la confirmación de la contraseña no coinciden' });
+        return;
     }
-  
-    // Inserta los datos del usuario en la base de datos
-    pool.query(
-      'INSERT INTO usuarios (nombre, apellido, correo, password, tipo_usuario) VALUES (50, 50, 50, 50, 50)',
-      [firstName, lastName, email, password, 'cliente'],
-      (error, results) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).json({ message: 'Error interno del servidor' });
+    
+    const tipoUsuario = 'cliente';
+
+    try {
+        const verify:any = await getUserByEmail(email)
+       
+        if (verify.length > 0){ 
+            res.status(500).json({ message: 'Usuario ya registrado' });
+            return 
         }
-        res.status(200).json({ message: 'Usuario registrado correctamente' });
-      }
-    );
-  };
-  
-  export { registerUser };
+    
+        const user = {
+            nombre: firstName,
+            apellido: lastName,
+            correo: email,
+            password,
+            tipo_usuario: tipoUsuario
+        };
+
+        const result = await addUser(user);
+        res.status(201).json({ message: 'Usuario registrado correctamente', userId: result.insertId });
+    } catch (error) {
+        console.error('Error registrando usuario:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+export { registerUser };
