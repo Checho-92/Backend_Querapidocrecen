@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { addUser, getUserByEmail } from '../models/userModel';
+import jwt from 'jsonwebtoken';
+import { pool } from '../database';
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
@@ -8,17 +10,17 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         res.status(400).json({ message: 'La contraseña y la confirmación de la contraseña no coinciden' });
         return;
     }
-    
+
     const tipoUsuario = 'cliente';
 
     try {
-        const verify:any = await getUserByEmail(email)
-       
-        if (verify.length > 0){ 
+        const existingUser = await getUserByEmail(email);
+
+        if (existingUser && existingUser.length > 0) {
             res.status(500).json({ message: 'Usuario ya registrado' });
-            return 
+            return;
         }
-    
+
         const user = {
             nombre: firstName,
             apellido: lastName,
@@ -28,7 +30,18 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         };
 
         const result = await addUser(user);
-        res.status(201).json({ message: 'Usuario registrado correctamente', userId: result.insertId });
+
+        // Añadir permiso 'add_to_cart' para el nuevo usuario
+        const userId = result.insertId;
+        await pool.query(
+            'INSERT INTO permisos (id_usuario, permiso) VALUES (?, ?)',
+            [userId, 'add_to_cart']
+        );
+
+        // Generar token
+        const token = jwt.sign({ userId: userId }, 'your_secret_key', { expiresIn: '1h' });
+
+        res.status(201).json({ message: 'Usuario registrado correctamente', token, user: { id: userId, nombre: firstName } });
     } catch (error) {
         console.error('Error registrando usuario:', error);
         res.status(500).json({ message: 'Error interno del servidor' });

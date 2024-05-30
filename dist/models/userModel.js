@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getAllUsers = exports.getUserByEmail = exports.addUser = void 0;
-//userModel.ts
 const database_1 = require("../database");
 // Función para agregar un nuevo usuario a la base de datos
 const addUser = (user) => __awaiter(void 0, void 0, void 0, function* () {

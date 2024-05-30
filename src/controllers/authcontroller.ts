@@ -1,4 +1,3 @@
-//authController
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { pool } from '../database'; // Importa el pool de conexiones a la base de datos

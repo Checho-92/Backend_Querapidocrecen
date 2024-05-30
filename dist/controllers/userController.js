@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerUser = void 0;
 const userModel_1 = require("../models/userModel");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const database_1 = require("../database");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
@@ -19,8 +24,8 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     const tipoUsuario = 'cliente';
     try {
-        const verify = yield (0, userModel_1.getUserByEmail)(email);
-        if (verify.length > 0) {
+        const existingUser = yield (0, userModel_1.getUserByEmail)(email);
+        if (existingUser && existingUser.length > 0) {
             res.status(500).json({ message: 'Usuario ya registrado' });
             return;
         }
@@ -32,7 +37,12 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             tipo_usuario: tipoUsuario
         };
         const result = yield (0, userModel_1.addUser)(user);
-        res.status(201).json({ message: 'Usuario registrado correctamente', userId: result.insertId });
+        // Añadir permiso 'add_to_cart' para el nuevo usuario
+        const userId = result.insertId;
+        yield database_1.pool.query('INSERT INTO permisos (id_usuario, permiso) VALUES (?, ?)', [userId, 'add_to_cart']);
+        // Generar token
+        const token = jsonwebtoken_1.default.sign({ userId: userId }, 'your_secret_key', { expiresIn: '1h' });
+        res.status(201).json({ message: 'Usuario registrado correctamente', token, user: { id: userId, nombre: firstName } });
     }
     catch (error) {
         console.error('Error registrando usuario:', error);

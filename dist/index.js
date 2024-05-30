@@ -1,4 +1,5 @@
 "use strict";
+//index.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,6 +16,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
+const cartRoutes_1 = __importDefault(require("./routes/cartRoutes"));
 const database_1 = require("./database");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -28,22 +31,12 @@ dotenv_1.default.config();
     }
 }))();
 const app = (0, express_1.default)();
-// Middleware para registrar todas las solicitudes
-//app.use((req, res, next) => {
-//console.log(`${req.method} ${req.path}`);
-//console.log('Headers:', req.headers);
-//next();
-//});
 // Middleware para habilitar CORS
-// app.use(cors({
-//     origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//     credentials: true
-// }));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/api', userRoutes_1.default);
+app.use('/api', productRoutes_1.default);
+app.use('/api', cartRoutes_1.default);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor Express en funcionamiento en el puerto ${PORT}`);

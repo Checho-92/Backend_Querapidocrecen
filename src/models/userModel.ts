@@ -1,5 +1,5 @@
-//userModel.ts
 import { pool } from '../database';
+import { ResultSetHeader } from 'mysql2/promise';
 
 export interface User {
     id_usuario?: number;
@@ -11,10 +11,10 @@ export interface User {
 }
 
 // Función para agregar un nuevo usuario a la base de datos
-export const addUser = async (user: User): Promise<any> => {
+export const addUser = async (user: User): Promise<ResultSetHeader> => {
     const { nombre, apellido, correo, password, tipo_usuario } = user;
     try {
-        const [result] = await pool.query(
+        const [result]: [ResultSetHeader, any] = await pool.query(
             'INSERT INTO usuarios (nombre, apellido, correo, password, tipo_usuario) VALUES (?, ?, ?, ?, ?)',
             [nombre, apellido, correo, password, tipo_usuario]
         );
