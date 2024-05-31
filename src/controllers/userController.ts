@@ -30,16 +30,18 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         };
 
         const result = await addUser(user);
-
-        // Añadir permiso 'add_to_cart' para el nuevo usuario
+        
+        // Obtener el ID del nuevo usuario insertado
         const userId = result.insertId;
-        await pool.query(
-            'INSERT INTO permisos (id_usuario, permiso) VALUES (?, ?)',
-            [userId, 'add_to_cart']
-        );
+        
+        // Insertar en la tabla `clientes`
+        await pool.query('INSERT INTO clientes (id_cliente, nombre) VALUES (?, ?)', [userId, firstName]);
+        
+        // Insertar en la tabla `permisos`
+        await pool.query('INSERT INTO permisos (id_usuario, permiso) VALUES (?, ?)', [userId, 'add_to_cart']);
 
         // Generar token
-        const token = jwt.sign({ userId: userId }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jwt.sign({ userId }, 'your_secret_key', { expiresIn: '1h' });
 
         res.status(201).json({ message: 'Usuario registrado correctamente', token, user: { id: userId, nombre: firstName } });
     } catch (error) {

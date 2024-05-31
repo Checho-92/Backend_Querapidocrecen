@@ -37,11 +37,14 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             tipo_usuario: tipoUsuario
         };
         const result = yield (0, userModel_1.addUser)(user);
-        // Añadir permiso 'add_to_cart' para el nuevo usuario
+        // Obtener el ID del nuevo usuario insertado
         const userId = result.insertId;
+        // Insertar en la tabla `clientes`
+        yield database_1.pool.query('INSERT INTO clientes (id_cliente, nombre) VALUES (?, ?)', [userId, firstName]);
+        // Insertar en la tabla `permisos`
         yield database_1.pool.query('INSERT INTO permisos (id_usuario, permiso) VALUES (?, ?)', [userId, 'add_to_cart']);
         // Generar token
-        const token = jsonwebtoken_1.default.sign({ userId: userId }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ userId }, 'your_secret_key', { expiresIn: '1h' });
         res.status(201).json({ message: 'Usuario registrado correctamente', token, user: { id: userId, nombre: firstName } });
     }
     catch (error) {
