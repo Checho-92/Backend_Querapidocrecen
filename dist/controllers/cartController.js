@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCartItems = exports.addToCart = exports.getProductsByCategory = void 0;
+exports.deleteCartItem = exports.updateCartItem = exports.getCartItems = exports.addToCart = exports.getProductsByCategory = void 0;
 const database_1 = require("../database");
 // Función para verificar permisos
 const hasPermission = (userId, permission) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,8 +42,14 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const price = product.precio;
             const subTotal = price * quantity;
             const total = subTotal; // Puedes agregar lógica adicional si hay descuentos o impuestos
-            const [result] = yield database_1.pool.query('INSERT INTO carrito (id_cliente, id_producto, precio, cantidad, sub_total, total, estado, nombre, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [userId, productId, price, quantity, subTotal, total, 'pendiente', product.nombre, product.imagen]);
-            res.status(200).json({ message: 'Artículo agregado al carrito correctamente', result });
+            const [existingCart] = yield database_1.pool.query('SELECT * FROM carrito WHERE id_cliente = ? AND id_producto = ? AND estado = ?', [userId, productId, 'pendiente']);
+            if (existingCart.length > 0) {
+                yield database_1.pool.query('UPDATE carrito SET cantidad = cantidad + ?, sub_total = sub_total + ?, total = total + ? WHERE id_cliente = ? AND id_producto = ? AND estado = ?', [quantity, subTotal, total, userId, productId, 'pendiente']);
+            }
+            else {
+                yield database_1.pool.query('INSERT INTO carrito (id_cliente, id_producto, precio, cantidad, sub_total, total, estado, nombre, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [userId, productId, price, quantity, subTotal, total, 'pendiente', product.nombre, product.imagen]);
+            }
+            res.status(200).json({ message: 'Artículo agregado al carrito correctamente' });
         }
         else {
             res.status(403).json({ message: 'No tienes permisos para agregar al carrito' });
@@ -68,3 +74,36 @@ const getCartItems = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getCartItems = getCartItems;
+// Función para actualizar la cantidad de un producto en el carrito
+const updateCartItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, cartItemId, quantity } = req.body;
+    try {
+        const [cartItemRows] = yield database_1.pool.query('SELECT * FROM carrito WHERE id_carrito = ? AND id_cliente = ? AND estado = ?', [cartItemId, userId, 'pendiente']);
+        if (cartItemRows.length === 0) {
+            return res.status(404).json({ message: 'Artículo del carrito no encontrado' });
+        }
+        const cartItem = cartItemRows[0];
+        const subTotal = cartItem.precio * quantity;
+        const total = subTotal;
+        yield database_1.pool.query('UPDATE carrito SET cantidad = ?, sub_total = ?, total = ? WHERE id_carrito = ?', [quantity, subTotal, total, cartItemId]);
+        res.status(200).json({ message: 'Cantidad actualizada correctamente' });
+    }
+    catch (error) {
+        console.error('Error al actualizar la cantidad:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
+exports.updateCartItem = updateCartItem;
+// Función para eliminar un artículo del carrito
+const deleteCartItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, cartItemId } = req.body;
+    try {
+        yield database_1.pool.query('DELETE FROM carrito WHERE id_carrito = ? AND id_cliente = ?', [cartItemId, userId]);
+        res.status(200).json({ message: 'Artículo eliminado del carrito correctamente' });
+    }
+    catch (error) {
+        console.error('Error al eliminar el artículo del carrito:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
+exports.deleteCartItem = deleteCartItem;

@@ -1,32 +1,32 @@
-//index.ts
 
-import express from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import cartRoutes from './routes/cartRoutes';
 import { pool } from './database';
-import dotenv from 'dotenv';
+import morgan from 'morgan'
 
-dotenv.config();
+const app: Application = express();
 
-(async () => {
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+
+app.use('/api/user', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+
+const checkDatabaseConnection = async () => {
     try {
         await pool.query('SELECT 1');
         console.log('¡Conexión exitosa a la base de datos!');
     } catch (err) {
         console.error('Error al conectar con la base de datos:', err);
     }
-})();
+};
 
-const app = express();
-
-// Middleware para habilitar CORS
-app.use(cors());
-app.use(express.json());
-app.use('/api', userRoutes);
-app.use('/api', productRoutes);
-app.use('/api', cartRoutes);
+checkDatabaseConnection();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

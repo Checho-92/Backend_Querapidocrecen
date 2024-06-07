@@ -14,3 +14,4 @@ const pool = (0, promise_1.createPool)({
     queueLimit: 0
 });
 exports.pool = pool;
+console.log('Hola');

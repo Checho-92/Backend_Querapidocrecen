@@ -1,14 +1,6 @@
 // productController.ts
-
 import { Request, Response } from 'express';
-import {
-  getAllProducts,
-  getProductsByCategory,
-  getProductById,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from '../models/productModel';
+import { getAllProducts, getProductsByCategory, getProductById, addProduct, updateProduct, deleteProduct } from '../models/productModel';
 
 // Obtener todos los productos
 const getAll = async (req: Request, res: Response) => {
@@ -24,6 +16,7 @@ const getAll = async (req: Request, res: Response) => {
 // Obtener productos por categoría
 const getByCategory = async (req: Request, res: Response) => {
   const { category } = req.params;
+  console.log(category)
   try {
     const products = await getProductsByCategory(category);
     res.status(200).json(products);
@@ -37,7 +30,7 @@ const getByCategory = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const product = await getProductById(parseInt(id, 10));
+    const product = await getProductById(Number(id));
     if (product) {
       res.status(200).json(product);
     } else {
@@ -66,7 +59,7 @@ const update = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { categoria, nombre, talla, estado, precio, imagen } = req.body;
   try {
-    const success = await updateProduct(parseInt(id, 10), { categoria, nombre, talla, estado, precio, imagen });
+    const success = await updateProduct(Number(id), { categoria, nombre, talla, estado, precio, imagen });
     if (success) {
       res.status(200).json({ message: 'Producto actualizado correctamente' });
     } else {
@@ -82,7 +75,7 @@ const update = async (req: Request, res: Response) => {
 const remove = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const success = await deleteProduct(parseInt(id, 10));
+    const success = await deleteProduct(Number(id));
     if (success) {
       res.status(200).json({ message: 'Producto eliminado correctamente' });
     } else {
@@ -94,11 +87,4 @@ const remove = async (req: Request, res: Response) => {
   }
 };
 
-export {
-  getAll,
-  getByCategory,
-  getById,
-  add,
-  update,
-  remove,
-};
+export { getAll, getByCategory, getById, add, update, remove };

@@ -13,3 +13,5 @@ const pool = createPool({
 });
 
 export { pool };
+
+console.log('Hola')

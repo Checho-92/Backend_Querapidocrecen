@@ -1,5 +1,4 @@
 "use strict";
-// productController.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -27,6 +26,7 @@ exports.getAll = getAll;
 // Obtener productos por categoría
 const getByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category } = req.params;
+    console.log(category);
     try {
         const products = yield (0, productModel_1.getProductsByCategory)(category);
         res.status(200).json(products);
@@ -41,7 +41,7 @@ exports.getByCategory = getByCategory;
 const getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const product = yield (0, productModel_1.getProductById)(parseInt(id, 10));
+        const product = yield (0, productModel_1.getProductById)(Number(id));
         if (product) {
             res.status(200).json(product);
         }
@@ -73,7 +73,7 @@ const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { categoria, nombre, talla, estado, precio, imagen } = req.body;
     try {
-        const success = yield (0, productModel_1.updateProduct)(parseInt(id, 10), { categoria, nombre, talla, estado, precio, imagen });
+        const success = yield (0, productModel_1.updateProduct)(Number(id), { categoria, nombre, talla, estado, precio, imagen });
         if (success) {
             res.status(200).json({ message: 'Producto actualizado correctamente' });
         }
@@ -91,7 +91,7 @@ exports.update = update;
 const remove = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const success = yield (0, productModel_1.deleteProduct)(parseInt(id, 10));
+        const success = yield (0, productModel_1.deleteProduct)(Number(id));
         if (success) {
             res.status(200).json({ message: 'Producto eliminado correctamente' });
         }

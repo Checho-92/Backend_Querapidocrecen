@@ -1,5 +1,3 @@
-// productModel.ts
-
 import { pool } from '../database';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
@@ -58,11 +56,4 @@ const deleteProduct = async (id: number): Promise<boolean> => {
   return result.affectedRows > 0;
 };
 
-export {
-  getAllProducts,
-  getProductsByCategory,
-  getProductById,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-};
+export { getAllProducts, getProductsByCategory, getProductById, addProduct, updateProduct, deleteProduct };

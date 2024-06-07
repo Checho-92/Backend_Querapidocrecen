@@ -1,10 +1,11 @@
-// cartRoutes.ts
 import express from 'express';
-import { addToCart, getCartItems } from '../controllers/cartController';
+import { addToCart, getCartItems, updateCartItem, deleteCartItem } from '../controllers/cartController';
 
 const router = express.Router();
 
-router.post('/cart/add', addToCart);
-router.get('/cart/:userId', getCartItems);
+router.post('/add', addToCart);
+router.get('/:userId', getCartItems);
+router.put('/update', updateCartItem);
+router.delete('/delete', deleteCartItem);
 
 export default router;

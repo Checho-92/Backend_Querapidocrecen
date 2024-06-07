@@ -1,14 +1,16 @@
 // productRoutes.ts
-import express from 'express';
+import express, {Request, Response} from 'express';
 import { getAll, getByCategory, getById, add, update, remove } from '../controllers/productController';
+
 
 const router = express.Router();
 
-router.get('/products', getAll);
-router.get('/products/category/:category', getByCategory);
-router.get('/products/:id', getById);
-router.post('/products', add);
-router.put('/products/:id', update);
-router.delete('/products/:id', remove);
+router.get('/', getAll);
+router.get('/category/:category', getByCategory);
+router.get('/:id', getById);
+router.post('/', add);
+router.put('/:id', update);
+router.delete('/:id', remove);
 
 export default router;
+

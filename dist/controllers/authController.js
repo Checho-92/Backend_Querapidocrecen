@@ -14,18 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const database_1 = require("../database"); // Importa el pool de conexiones a la base de datos
+const database_1 = require("../database");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body; // Obtiene los datos del cuerpo de la solicitud
+    const { email, password } = req.body;
     try {
-        // Verifica las credenciales del usuario en la base de datos
-        const [results] = yield database_1.pool.query('SELECT * FROM usuarios WHERE correo = ? AND password = ?', [email, password]);
-        if (results.length === 0) { // Verifica si no hay resultados o si el array de resultados está vacío
+        const [results] = yield database_1.pool.query('SELECT * FROM usuarios WHERE correo = ?', [email]);
+        if (results.length === 0) {
             res.status(401).json({ message: 'Credenciales incorrectas' });
             return;
         }
-        // Genera un token de autenticación
         const user = results[0];
+        const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
+        if (!isPasswordValid) {
+            res.status(401).json({ message: 'Credenciales incorrectas' });
+            return;
+        }
         const token = jsonwebtoken_1.default.sign({ userId: user.id_usuario }, 'your_secret_key', { expiresIn: '1h' });
         res.status(200).json({ token, user: { id: user.id_usuario, nombre: user.nombre } });
     }

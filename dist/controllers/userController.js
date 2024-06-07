@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
+exports.updateUserInformation = exports.registerUser = void 0;
 const userModel_1 = require("../models/userModel");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../database");
@@ -53,3 +53,15 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registerUser = registerUser;
+const updateUserInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id_usuario, nombre, email, password } = req.body;
+    try {
+        const updatedUser = yield (0, userModel_1.updateUser)(id_usuario, { nombre, correo: email, password });
+        res.status(200).json({ message: 'Usuario actualizado correctamente', updatedUser });
+    }
+    catch (error) {
+        console.error('Error al actualizar el usuario:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
+exports.updateUserInformation = updateUserInformation;
