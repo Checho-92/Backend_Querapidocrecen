@@ -17,6 +17,7 @@ const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const cartRoutes_1 = __importDefault(require("./routes/cartRoutes"));
+const orderRoutes_1 = __importDefault(require("./routes/orderRoutes")); // Importa la nueva ruta
 const database_1 = require("./database");
 const morgan_1 = __importDefault(require("morgan"));
 const app = (0, express_1.default)();
@@ -26,6 +27,7 @@ app.use(express_1.default.json());
 app.use('/api/user', userRoutes_1.default);
 app.use('/api/products', productRoutes_1.default);
 app.use('/api/cart', cartRoutes_1.default);
+app.use('/api/orders', orderRoutes_1.default); // Usa la nueva ruta
 const checkDatabaseConnection = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield database_1.pool.query('SELECT 1');

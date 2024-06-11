@@ -4,6 +4,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import cartRoutes from './routes/cartRoutes';
+import orderRoutes from './routes/orderRoutes'; // Importa la nueva ruta
 import { pool } from './database';
 import morgan from 'morgan'
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api/user', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes); // Usa la nueva ruta
 
 const checkDatabaseConnection = async () => {
     try {

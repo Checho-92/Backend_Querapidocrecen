@@ -90,10 +90,22 @@ export const updateUser = async (id_usuario: number, user: Partial<User>): Promi
 
 // Función para eliminar un usuario
 export const deleteUser = async (id_usuario: number): Promise<any> => {
+    const connection = await pool.getConnection();
     try {
-        const [result] = await pool.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+        await connection.beginTransaction();
+
+        // Eliminar primero las filas dependientes en la tabla `permisos`
+        await connection.query('DELETE FROM permisos WHERE id_usuario = ?', [id_usuario]);
+
+        // Eliminar el usuario
+        const [result] = await connection.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+
+        await connection.commit();
         return result;
     } catch (error) {
+        await connection.rollback();
         throw error;
+    } finally {
+        connection.release();
     }
 };
