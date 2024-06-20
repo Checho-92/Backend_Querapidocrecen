@@ -1,8 +1,10 @@
-import express from 'express';
-import { createOrder  } from '../controllers/orderController';
+        //orderRoutes.ts
 
-const router = express.Router();
+        import express from 'express';
+        import { createOrder  } from '../controllers/orderController';
 
-router.post('/create', createOrder );
+        const router = express.Router();
 
-export default router;
+        router.post('/create', createOrder );
+
+        export default router;

@@ -1,3 +1,5 @@
+//userController.ts
+
 import { Request, Response } from 'express'; // Importación de las interfaces Request y Response de Express
 import { addUser, getUserByEmail, updateUser, deleteUser } from '../models/userModel'; // Importación de las funciones del modelo de usuario
 import jwt from 'jsonwebtoken'; // Importación del módulo jsonwebtoken para generar y verificar tokens JWT

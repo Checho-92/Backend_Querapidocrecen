@@ -1,3 +1,5 @@
+//userRoutes.ts
+
 import express from 'express';
 import { login } from '../controllers/authController';
 import { registerUser, updateUserInformation, deleteUserAccount } from '../controllers/userController';

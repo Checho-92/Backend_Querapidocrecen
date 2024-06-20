@@ -1,3 +1,4 @@
+//productModel.ts
 import { pool } from '../database';
 import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 

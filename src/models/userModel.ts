@@ -1,3 +1,4 @@
+//userModel.ts
 import { pool } from '../database';
 import bcrypt from 'bcrypt';
 

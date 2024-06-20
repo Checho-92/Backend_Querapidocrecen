@@ -1,3 +1,4 @@
+            //cartModel.ts
             import { pool } from '../database';
 
             interface CartItem {
