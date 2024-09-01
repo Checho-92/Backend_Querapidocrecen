@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.updateProduct = exports.addProduct = exports.getProductById = exports.getProductsByCategory = exports.getAllProducts = void 0;
+//productModel.ts
 const database_1 = require("../database");
 // Obtener todos los productos
 const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {

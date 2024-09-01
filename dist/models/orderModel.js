@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = void 0;
+//orderModel.ts
 const database_1 = require("../database");
 const createOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
     const { fecha, estado, cantidad, precio, direccion, nombre, id_cliente } = order;

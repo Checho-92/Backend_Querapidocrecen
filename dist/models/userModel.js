@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getAllUsers = exports.getUserByEmail = exports.addUser = void 0;
+//userModel.ts
 const database_1 = require("../database");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 // Función para agregar un nuevo usuario a la base de datos
@@ -90,12 +91,22 @@ const updateUser = (id_usuario, user) => __awaiter(void 0, void 0, void 0, funct
 exports.updateUser = updateUser;
 // Función para eliminar un usuario
 const deleteUser = (id_usuario) => __awaiter(void 0, void 0, void 0, function* () {
+    const connection = yield database_1.pool.getConnection();
     try {
-        const [result] = yield database_1.pool.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+        yield connection.beginTransaction();
+        // Eliminar primero las filas dependientes en la tabla `permisos`
+        yield connection.query('DELETE FROM permisos WHERE id_usuario = ?', [id_usuario]);
+        // Eliminar el usuario
+        const [result] = yield connection.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+        yield connection.commit();
         return result;
     }
     catch (error) {
+        yield connection.rollback();
         throw error;
+    }
+    finally {
+        connection.release();
     }
 });
 exports.deleteUser = deleteUser;

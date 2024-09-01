@@ -1,0 +1,34 @@
+# Node modules
+node_modules/
+
+# Archivos de entorno
+.env
+
+# Salidas de compilación
+dist/
+build/
+
+# Dependencias instaladas en Electron
+electron/dist/
+
+# Archivos de log
+*.log
+
+# Directorios del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de editores
+.vscode/
+.idea/
+
+# Archivos de cobertura de pruebas
+coverage/
+
+# Paquetes
+*.tgz
+
+# Archivos de caché
+.cache/
+
+

@@ -1,5 +1,8 @@
 //database.ts
+import dotenv from 'dotenv';
 import { createPool } from 'mysql2/promise';
+
+dotenv.config();
 
 const pool = createPool({
     host: process.env.DB_HOST || 'localhost',
@@ -14,4 +17,4 @@ const pool = createPool({
 
 export { pool };
 
-console.log('Hola')
+console.log('Conexion a la base de datos configurada')

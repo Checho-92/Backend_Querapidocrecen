@@ -1,4 +1,5 @@
 "use strict";
+//userRoutes.ts
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,4 +11,5 @@ const router = express_1.default.Router();
 router.post('/register', userController_1.registerUser);
 router.post('/login', authController_1.login);
 router.put('/update-user', userController_1.updateUserInformation);
+router.delete('/delete-user/:id', userController_1.deleteUserAccount); // Nueva ruta para eliminar cuenta
 exports.default = router;

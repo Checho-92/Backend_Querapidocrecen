@@ -25,7 +25,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const orderId = orderResult.insertId;
         // Insertar cada artículo del carrito en la tabla de detalles del pedido
         for (const item of cartItems) {
-            yield database_1.pool.query('INSERT INTO detalles_pedido (id_pedido, id_producto, cantidad, precio) VALUES (?, ?, ?, ?)', [orderId, item.id_producto, item.cantidad, item.precio]);
+            yield database_1.pool.query('INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio, nombre_producto) VALUES (?, ?, ?, ?, ?)', [orderId, item.id_producto, item.cantidad, item.precio, item.nombre]);
         }
         // Actualizar el estado de los artículos del carrito a 'completado'
         yield database_1.pool.query('UPDATE carrito SET estado = ? WHERE id_cliente = ? AND estado = ?', ['completado', id_cliente, 'pendiente']);
