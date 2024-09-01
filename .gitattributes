@@ -1,0 +1,8 @@
+# Forzar LF en todos los archivos de texto
+* text=auto eol=lf
+
+# Para archivos JavaScript
+*.js text eol=lf
+
+# Para archivos JSON
+*.json text eol=lf
