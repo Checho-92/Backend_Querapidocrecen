@@ -11,6 +11,8 @@ import orderRoutes from './routes/orderRoutes'; // Importa la nueva ruta
 import { pool } from './database';
 import morgan from 'morgan'
 import helmet from 'helmet';
+mysql://root:TJAdRyXslrQaEZguBJAancOVjHnDRlck@autorack.proxy.rlwy.net:23400/railway
+
 
 // Cargar variables de entorno
 dotenv.config();
